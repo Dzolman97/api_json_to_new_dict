@@ -2,7 +2,9 @@ from pprint import pprint
 from requests import Request, Session
 from requests. exceptions import ConnectionError, Timeout, TooManyRedirects
 import json
-from operator import itemgetter
+import psycopg2
+from psycopg2.extras import execute_batch
+
 
 url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest'
 parameters = {
@@ -57,3 +59,37 @@ def latest_data():
        new_list.append(my_dict)
 
     return new_list
+
+
+
+hostname = ''
+database = ''
+username = ''
+pwd = ''
+port_id = 5432
+conn = None
+cur = None
+
+try:
+    conn = psycopg2.connect(
+                host = hostname,
+                dbname = database,
+                user = username,
+                password = pwd,
+                port = port_id)
+    
+    cur = conn.cursor()
+
+    values = latest_data()
+    query = "INSERT INTO latest_coin_data VALUES (%(coin_name)s, %(coin_symbol)s, %(coin_price)s, %(volume_24h)s, %(volume_change_24h)s, %(percent_change_1h)s, %(percent_change_24h)s, %(percent_change_7d)s, %(percent_change_30d)s, %(percent_change_60d)s, %(percent_change_90d)s)"
+    
+    execute_batch(cur, query, values)
+
+    conn.commit()
+except Exception as error:
+    print(error)
+finally:
+    if cur is not None:
+       cur.close()
+    if conn is not None:
+       conn.close()
