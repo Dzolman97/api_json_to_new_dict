@@ -92,7 +92,9 @@ while(True):
       
       # Bulk insert into database
       values = latest_data()
-      query = "INSERT INTO latest_coin_data VALUES (%(coin_name)s, %(coin_symbol)s, %(coin_price)s, %(volume_24h)s, %(volume_change_24h)s, %(percent_change_1h)s, %(percent_change_24h)s, %(percent_change_7d)s, %(percent_change_30d)s, %(percent_change_60d)s, %(percent_change_90d)s, %(datetime)s)"
+      query = """INSERT INTO latest_coin_data VALUES (%(coin_name)s, %(coin_symbol)s, %(coin_price)s, 
+             %(volume_24h)s, %(volume_change_24h)s, %(percent_change_1h)s, %(percent_change_24h)s, %(percent_change_7d)s, 
+             %(percent_change_30d)s, %(percent_change_60d)s, %(percent_change_90d)s, %(datetime)s)"""
       
       execute_batch(cur, query, values)
 
